@@ -1,19 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      width: 360px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: #333;
+      font-size: 22px;
+    }
+
+    .role {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .user-id {
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-weight: bold;
+      color: #444;
+    }
+
+    a {
+      display: block;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .check {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .check:hover {
+      background: #45a049;
+    }
+
+    .logout {
+      background: #f44336;
+      color: white;
+    }
+
+    .logout:hover {
+      background: #d32f2f;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Welcome to your Dashboard!</h1>
-    <p id="id"></p>
-    <p>You are logged in as a student🎉</p>
-    <a href="./checkResult.html">Check your result</a>
-    <a href="/logout">Logout</a><br>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        document.getElementById("id").innerHTML = "<p>Your ID: " + params.get("userId") + "</p>";
-    </script>
+
+  <div class="card">
+    <h1>Welcome to your Dashboard 🎉</h1>
+
+    <p class="role">You are logged in as a student</p>
+
+    <div class="user-id" id="id"></div>
+
+    <a class="check" href="./checkResult.html">Check your result</a>
+    <a class="logout" href="/logout">Logout</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById("id").innerText =
+      "Your ID: " + params.get("userId");
+  </script>
+
 </body>
 </html>

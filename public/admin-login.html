@@ -1,20 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+    }
+
+    /* LEFT SIDE - PINK */
+    .left {
+      flex: 1;
+      background: linear-gradient(135deg, #ff4da6, #ff2e63);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px;
+      color: white;
+    }
+
+    .left h1 {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .left p {
+      max-width: 420px;
+      line-height: 1.6;
+      opacity: 0.95;
+    }
+
+    /* RIGHT SIDE - BLACK */
+    .right {
+      flex: 1;
+      background: #0b0b0b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-box {
+      width: 360px;
+      background: #151515;
+      padding: 30px;
+      border-radius: 14px;
+      border: 1px solid #2a2a2a;
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+
+    .form-box h2 {
+      margin-bottom: 20px;
+      color: #ff4da6;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #333;
+      border-radius: 8px;
+      background: #0b0b0b;
+      color: white;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #ff4da6;
+      box-shadow: 0 0 8px rgba(255, 77, 166, 0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #ff4da6, #ff2e63);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+      transform: scale(1.02);
+    }
+
+    a {
+      display: block;
+      margin-top: 15px;
+      text-decoration: none;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    a:hover {
+      color: #fff;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .left {
+        flex: none;
+        height: 50vh;
+      }
+
+      .right {
+        flex: none;
+        height: 50vh;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <h2>Admin Login</h2>
-    <form action="/login" method="POST">
+
+  <div class="left">
+    <h1>Admin Portal</h1>
+    <p>
+      Login to access the control panel, manage users,
+      approve registrations, and oversee system operations.
+    </p>
+  </div>
+
+  <div class="right">
+    <div class="form-box">
+      <h2>Admin Login</h2>
+
+      <form action="/login" method="POST">
         <input type="text" name="username" placeholder="Username" required />
-        <br><br>
         <input type="password" name="password" placeholder="Password" required />
-        <br><br>
         <button type="submit">Login</button>
-    </form>
-    <br>
-    <a href="register.html">Don't have an account? Register</a><br>
+      </form>
+
+      <a href="admin-register.html">Don't have an account? Register</a>
+    </div>
+  </div>
+
 </body>
+
 </html>

@@ -1,31 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Results</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Results</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background: #fafafa;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 15px;
+      text-decoration: none;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .back:hover {
+      color: black;
+    }
+  </style>
 </head>
+
 <body>
+
+  <div class="container">
     <h2>Upload Student Result</h2>
 
-<form
-  action="/upload-results"
-  method="POST"
-  enctype="multipart/form-data"
->
-
-<input 
-      type="file" 
-      name="excelFile" 
-      accept=".xlsx,.xls"
-      required
-    />
-
-  <button type="submit">
-    Upload Results
-  </button>
-</form>
-<a href="/dashboard">Back</a>
+    <form action="/upload-results" method="POST" enctype="multipart/form-data">
+      <input type="file" name="excelFile" accept=".xlsx,.xls" required />
+      <button type="submit">Upload Results</button>
+    </form>
+  </div>
 
 </body>
 </html>

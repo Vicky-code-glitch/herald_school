@@ -44,8 +44,21 @@ app.get('/', (_, res) => {
         `);
 });
 
-// Login
-app.use('/', authRoute)
+// All REGISTER, LOGIN ROUTES
+app.use('/', authRoute);
+
+app.get(`/results`, async (req, res) => {
+  try {
+    const { studentId } = req.query;
+
+    const resp = await Result.find({ studentId });
+
+    res.send(resp);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server error");
+  }
+});
 
 app.get('/Error', (req, res) => {
     res.send(`

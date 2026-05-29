@@ -1,18 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Result</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0d0d0d;
+    }
+
+    .card {
+      width: 380px;
+      background: #151515;
+      padding: 30px;
+      border-radius: 14px;
+      border: 1px solid #2a2a2a;
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+
+    h2 {
+      color: #ff4da6;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #0d0d0d;
+      color: white;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #00c853;
+      box-shadow: 0 0 8px rgba(0, 200, 83, 0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #ff4da6, #00c853);
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      opacity: 0.9;
+    }
+
+    .msg {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .error {
+      color: #ff4da6;
+    }
+  </style>
 </head>
+
 <body>
-    <input type="text" name="" id="" placeholder="Input your id">
+
+  <div class="card">
+    <h2>Check Your Result 🎓</h2>
+
+    <input type="text" id="studentId" placeholder="Enter your Student ID" />
+
     <button onclick="checkResult()">Check Result</button>
-    <script>
-        function checkResult() {
-            const id = document.querySelector("input").value;
-            window.location.href = `/result?studentId=${id}`;
-        }
-    </script>
+
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <script>
+    async function checkResult() {
+      const id = document.getElementById("studentId").value.trim();
+      const msg = document.getElementById("msg");
+
+      if (!id) {
+        msg.textContent = "Please enter your Student ID";
+        msg.classList.add("error");
+        return;
+      }
+
+      msg.classList.remove("error");
+      msg.textContent = "Redirecting...";
+
+      setTimeout(() => {
+        window.location.href = `/results?studentId=${encodeURIComponent(id)}`;
+      }, 800);
+    }
+  </script>
+
 </body>
+
 </html>

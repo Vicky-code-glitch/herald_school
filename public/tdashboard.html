@@ -1,19 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f6f9fc, #e9eef5);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      width: 380px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: #2c3e50;
+      font-size: 22px;
+    }
+
+    .role {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .user-id {
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-weight: bold;
+      color: #444;
+    }
+
+    a {
+      display: block;
+      text-decoration: none;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .upload {
+      background: #3498db;
+      color: white;
+    }
+
+    .upload:hover {
+      background: #2980b9;
+    }
+
+    .logout {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .logout:hover {
+      background: #c0392b;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Welcome to your Dashboard!</h1>
-    <p id="id"></p>
-    <p>You are logged in as a teacher</p>
-    <a href="/add-result.html">Upload Results</a>
-    <a href="/logout">Logout</a><br>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        document.getElementById("id").innerHTML = "<p>Your ID: " + params.get("userId") + "</p>";
-    </script>
+
+  <div class="card">
+    <h1>Teacher Dashboard 📚</h1>
+
+    <p class="role">You are logged in as a teacher</p>
+
+    <div class="user-id" id="id"></div>
+
+    <a class="upload" href="/add-result.html">Upload Student Results</a>
+    <a class="logout" href="/logout">Logout</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById("id").innerText =
+      "Your ID: " + params.get("userId");
+  </script>
+
 </body>
 </html>

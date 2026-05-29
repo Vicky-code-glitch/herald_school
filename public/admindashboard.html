@@ -2,71 +2,199 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .container {
+      width: 700px;
+    }
+
+    .header {
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .user-id {
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #444;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .show-btn {
+      background: #3498db;
+      color: white;
+    }
+
+    .show-btn:hover {
+      background: #2980b9;
+    }
+
+    .approve {
+      background: #2ecc71;
+      color: white;
+    }
+
+    .approve:hover {
+      background: #27ae60;
+    }
+
+    .reject {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .reject:hover {
+      background: #c0392b;
+    }
+
+    .request {
+      border: 1px solid #eee;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 10px;
+      background: #fafafa;
+    }
+
+    .request h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .request p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 15px;
+      color: #e74c3c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 
 <body>
-    <h1>Welcome to your Dashboard!</h1>
-    <p id="id"></p>
-    <p>You are logged in as an admin</p>
-    <div id="pending">
-        <button onclick="findPending()">Show Pending Requests</button>
+
+  <div class="container">
+
+    <div class="header">
+      <h1>Admin Dashboard ⚙️</h1>
     </div>
-    <a href="/logout">Logout</a><br>
 
-    <script>
+    <div class="card">
+      <p>Welcome Admin</p>
+      <div id="id" class="user-id"></div>
+    </div>
 
-        const params = new URLSearchParams(window.location.search);
-        document.getElementById("id").innerHTML = "<p>Your ID: " + params.get("userId") + "</p>";
+    <div class="card">
+      <button class="show-btn" onclick="findPending()">Show Pending Requests</button>
 
+      <div id="pending"></div>
+    </div>
 
-        async function findPending() {
-            try {
-                const res = await fetch("http://localhost:3000/pending");
-                const pending = await res.json();
-                return document.getElementById("pending").innerHTML = `
-                    ${pending.map(p => `
-                        <div>
-                            <h2>Username: ${p.username}</h2>
-                            <h3>Status: ${p.status}</h3>
-                            <h3>Role: ${p.role}</h3>
-                            <button onclick="approve('${p._id}')">Approve</button>
-                            <button onclick="reject('${p._id}')">Reject</button>
-                        </div>
-                    `).join("")}
-                `;
-            } catch (err) {
-                console.log(err);
-            }
-        }
-        async function approve(id) {
-            try {
-                const res = await fetch(`http://localhost:3000/approve/${id}`, {
-                    method: "POST"
-                });
-                if (res.ok) {
-                    findPending();
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        }
+    <a href="/logout">Logout</a>
 
-        async function reject(id) {
-            try {
-                const res = await fetch(`http://localhost:3000/reject/${id}`, {
-                    method: "POST"
-                });
-                if (res.ok) {
-                    findPending();
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        }
-    </script>
+  </div>
+
+  <script>
+
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById("id").innerHTML =
+      "Your ID: " + params.get("userId");
+
+    async function findPending() {
+      try {
+        const res = await fetch("http://localhost:3000/pending");
+        const pending = await res.json();
+
+        document.getElementById("pending").innerHTML = pending.map(p => `
+          <div class="request">
+            <h2>${p.username}</h2>
+            <p>Status: ${p.status}</p>
+            <p>Role: ${p.role}</p>
+
+            <button class="approve" onclick="approve('${p._id}')">Approve</button>
+            <button class="reject" onclick="reject('${p._id}')">Reject</button>
+          </div>
+        `).join("");
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    async function approve(id) {
+      try {
+        const res = await fetch(`http://localhost:3000/approve/${id}`, {
+          method: "POST"
+        });
+
+        if (res.ok) findPending();
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    async function reject(id) {
+      try {
+        const res = await fetch(`http://localhost:3000/reject/${id}`, {
+          method: "POST"
+        });
+
+        if (res.ok) findPending();
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+  </script>
+
 </body>
 
 </html>

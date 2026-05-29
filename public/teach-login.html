@@ -1,20 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Login</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      background: #0d0d0d;
+      color: white;
+    }
+
+    /* LEFT SIDE */
+    .left {
+      flex: 1;
+      background: linear-gradient(135deg, #ff4da6, #00c853);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px;
+      color: black;
+    }
+
+    .left h1 {
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+
+    .left p {
+      max-width: 420px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    /* RIGHT SIDE */
+    .right {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0d0d0d;
+    }
+
+    .form-box {
+      width: 360px;
+      background: #151515;
+      padding: 30px;
+      border-radius: 14px;
+      border: 1px solid #2a2a2a;
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    }
+
+    .form-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #00c853;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #333;
+      border-radius: 8px;
+      background: #0d0d0d;
+      color: white;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #ff4da6;
+      box-shadow: 0 0 8px rgba(255, 77, 166, 0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #ff4da6, #00c853);
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      opacity: 0.9;
+    }
+
+    a {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    a:hover {
+      color: #00c853;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .left {
+        display: none;
+      }
+
+      .right {
+        height: 100vh;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <h2>Teacher Login</h2>
-    <form action="/login" method="POST">
+
+  <div class="left">
+    <h1>Teacher Portal 📚</h1>
+    <p>
+      Login to manage student results, upload records,
+      and access your teaching dashboard securely.
+    </p>
+  </div>
+
+  <div class="right">
+    <div class="form-box">
+      <h2>Login</h2>
+
+      <form action="/login" method="POST">
         <input type="text" name="username" placeholder="Username" required />
-        <br><br>
         <input type="password" name="password" placeholder="Password" required />
-        <br><br>
         <button type="submit">Login</button>
-    </form>
-    <br>
-    <a href="register.html">Don't have an account? Register</a><br>
+      </form>
+
+      <a href="register.html">Don't have an account? Register</a>
+    </div>
+  </div>
+
 </body>
+
 </html>
