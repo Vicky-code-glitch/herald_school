@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Results</title>
+</head>
+<body>
+    <h2>Upload Student Result</h2>
+
+<form action="/add-result" method="POST">
+    <label for="studentName">Student Name:</label><br><br>
+    <input name="studentName" placeholder="Name" required><br><br>
+    <label for="studentId">Student ID:</label><br><br>
+    <input name="studentId" placeholder="ID" required><br><br>
+    <label for="class">Class:</label><br><br>
+    <input name="class" placeholder="Class" required><br><br>
+    <label for="term">Term:</label><br><br>
+    <input name="term" placeholder="Class" required><br><br>
+    <label for="subject">Subject:</label><br><br>
+    <input name="subject" placeholder="Suject" required><br><br>
+    <label for="score">Score:</label><br><br>
+    <input type="number" placeholder="Score" name="score" required><br><br>
+    <button type="submit">Upload Result</button>
+</form>
+<a href="/dashboard">Back</a>
+
+</body>
+</html>

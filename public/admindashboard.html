@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <h1>Welcome to your Dashboard!</h1>
+    <p id="id"></p>
+    <p>You are logged in as an admin</p>
+    <div id="pending">
+        <button onclick="findPending()">Show Pending Requests</button>
+    </div>
+    <a href="/logout">Logout</a><br>
+
+    <script>
+
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById("id").innerHTML = "<p>Your ID: " + params.get("userId") + "</p>";
+
+
+        async function findPending() {
+            try {
+                const res = await fetch("http://localhost:3000/pending");
+                const pending = await res.json();
+                return document.getElementById("pending").innerHTML = `
+                    ${pending.map(p => `
+                        <div>
+                            <h2>Username: ${p.username}</h2>
+                            <h3>Status: ${p.status}</h3>
+                            <h3>Role: ${p.role}</h3>
+                            <button onclick="approve('${p._id}')">Approve</button>
+                            <button onclick="reject('${p._id}')">Reject</button>
+                        </div>
+                    `).join("")}
+                `;
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        async function approve(id) {
+            try {
+                const res = await fetch(`http://localhost:3000/approve/${id}`, {
+                    method: "POST"
+                });
+                if (res.ok) {
+                    findPending();
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        async function reject(id) {
+            try {
+                const res = await fetch(`http://localhost:3000/reject/${id}`, {
+                    method: "POST"
+                });
+                if (res.ok) {
+                    findPending();
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    </script>
+</body>
+
+</html>
