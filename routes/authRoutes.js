@@ -23,10 +23,10 @@ router.post(
   upload.single("excelFile"),
   addResult
 );
-router.post('/login', checkAuth, login)
-router.post('/register', checkAuth, studentRegister)
-router.post('/teacher', checkAuth, teacherRegister)
-router.post('/admin', checkAuth, adminRegister)
+router.post('/login', login)
+router.post('/register', studentRegister)
+router.post('/teacher', teacherRegister)
+router.post('/admin', adminRegister)
 router.post('/add-result', checkAuth, addResult);
 
 module.exports = router

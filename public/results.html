@@ -14,9 +14,13 @@
         async function findResults() {
             const res = await fetch("http://localhost:3000/results");
 
-            const data = await res.json();
+            const datas = await res.json();
 
-            document.getElementById("result").innerHTML = JSON.stringify(data);
+            document.getElementById("result").innerHTML = datas.map(
+                `<h1>${data.studentName}</h1><br>
+                <h2>${data.studentId}</h2><br>
+                <h2>${data.class}</h2>`
+            )
         }
     </script>
 </body>
