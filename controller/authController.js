@@ -1,6 +1,9 @@
 const express = require("express");
 const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
+const XLSX = require("xlsx");
+const path = require("path");
+const Result = require("../model/result model");
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -125,21 +128,37 @@ if (existingUser) {
 };
 
 const addResult = async (req, res) => {
-    let { studentName, studentId, class: studentClass, term, subject, score, role } = req.body;
+  try {
 
+    if (!req.file) {
+      return res.send("Please upload an Excel file");
+    }
 
-    const result = new Result({
-        studentName,
-        studentId,
-        class: studentClass,
-        term,
-        subject,
-        score
-    });
+    const workbook = XLSX.readFile(req.file.path);
 
-    await result.save();
-    res.send(`Result added successfully ✅
-            <a href="/dashboard">Back to dashboard</a>`);
-}
+    const sheetName = workbook.SheetNames[0];
+
+    const data = XLSX.utils.sheet_to_json(
+      workbook.Sheets[sheetName]
+    );
+
+    const formattedData = data.map((row) => ({
+      studentName: row["Student Name"],
+      studentId: row["Student ID"],
+      class: row["Class"],
+      term: row["Term"],
+      subject: row["Subject"],
+      score: row["Score"]
+    }));
+
+    await Result.insertMany(formattedData);
+
+    res.send("Results uploaded successfully ✅");
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error uploading results");
+  }
+};
 
 module.exports = { login, studentRegister, teacherRegister, adminRegister, addResult };

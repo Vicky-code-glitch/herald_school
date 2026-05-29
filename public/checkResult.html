@@ -7,5 +7,12 @@
 </head>
 <body>
     <input type="text" name="" id="" placeholder="Input your id">
+    <button onclick="checkResult()">Check Result</button>
+    <script>
+        function checkResult() {
+            const id = document.querySelector("input").value;
+            window.location.href = `/result?studentId=${id}`;
+        }
+    </script>
 </body>
 </html>
