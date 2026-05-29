@@ -8,6 +8,7 @@ const Result = require('./model/result model');
 const connectDB = require('./config/db');
 const authRoute = require('./routes/authRoutes');
 const dotenv = require('dotenv');
+const checkAuth = require('./middleware/checkAuth')
 
 connectDB;
 
@@ -26,11 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 /* ---------------- AUTH MIDDLEWARE ---------------- */
-function checkAuth(req, res, next) {
-    if (!req.session.userId) return res.send('Access denied ❌');
 
-    next();
-}
 
 /* ---------------- ROUTES ---------------- */
 

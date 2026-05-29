@@ -2,6 +2,7 @@ const express = require('express')
 const { login, studentRegister, teacherRegister, adminRegister, addResult } = require('../controller/authController')
 const router = express.Router();
 const multer = require("multer");
+const checkAuth = require('../middleware/checkAuth');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -22,10 +23,10 @@ router.post(
   upload.single("excelFile"),
   addResult
 );
-router.post('/login', login)
-router.post('/register',studentRegister)
-router.post('/teacher', teacherRegister)
-router.post('/admin', adminRegister)
-router.post('/add-result', addResult);
+router.post('/login', checkAuth, login)
+router.post('/register', checkAuth, studentRegister)
+router.post('/teacher', checkAuth, teacherRegister)
+router.post('/admin', checkAuth, adminRegister)
+router.post('/add-result', checkAuth, addResult);
 
 module.exports = router
