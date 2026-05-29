@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title>Submission Details</title>
+</head>
+<body>
+    <header>
+        <h1>Submission Details</h1>
+        <nav>
+            <a href="/admin/dashboard">Dashboard</a> |
+            <a href="/admin/users">Users</a> |
+            <a href="/admin/submissions">Submissions</a> |
+            <a href="/admin/stats">Statistics</a> |
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Assignment: <%= submission.assignmentId.title %></h2>
+        
+        <div style="background: #f4f4f4; padding: 1rem; border-radius: 5px;">
+            <h3>Student Information</h3>
+            <p><strong>Name:</strong> <%= submission.studentId.name %></p>
+            <p><strong>Email:</strong> <%= submission.studentId.email %></p>
+            <% if (submission.studentId.rollNumber) { %>
+                <p><strong>Roll Number:</strong> <%= submission.studentId.rollNumber %></p>
+            <% } %>
+        </div>
+        
+        <div style="margin: 1rem 0;">
+            <h3>Assignment Details</h3>
+            <p><strong>Due Date:</strong> <%= new Date(submission.assignmentId.dueDate).toLocaleString() %></p>
+            <p><strong>Total Marks:</strong> <%= submission.assignmentId.totalMarks %></p>
+            <p><strong>Description:</strong></p>
+            <p><%= submission.assignmentId.description %></p>
+        </div>
+        
+        <div style="margin: 1rem 0;">
+            <h3>Submission Details</h3>
+            <p><strong>Submitted:</strong> <%= new Date(submission.submittedAt).toLocaleString() %></p>
+            <p><strong>File:</strong> <a href="<%= submission.fileUrl %>" target="_blank"><%= submission.originalFileName %></a></p>
+            <p><strong>Status:</strong> <%= submission.status %></p>
+            
+            <% if (submission.grade !== null) { %>
+                <p><strong>Grade:</strong> <%= submission.grade %>%</p>
+                <% if (submission.feedback) { %>
+                    <p><strong>Feedback:</strong> <%= submission.feedback %></p>
+                <% } %>
+            <% } else { %>
+                <form id="gradeForm">
+                    <label><strong>Grade (0-100):</strong></label>
+                    <input type="number" id="grade" min="0" max="100" required>
+                    <br><br>
+                    <label><strong>Feedback:</strong></label>
+                    <textarea id="feedback" rows="3" style="width: 100%;"></textarea>
+                    <br><br>
+                    <button type="submit">Submit Grade</button>
+                </form>
+            <% } %>
+        </div>
+        
+        <a href="/admin/submissions">← Back to Submissions</a>
+    </main>
+    
+    <% if (submission.grade === null) { %>
+    <script>
+        document.getElementById('gradeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const grade = document.getElementById('grade').value;
+            const feedback = document.getElementById('feedback').value;
+            
+            if (grade < 0 || grade > 100) {
+                alert('Grade must be between 0 and 100');
+                return;
+            }
+            
+            const response = await fetch(`/admin/submissions/<%= submission._id %>/grade`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ grade: parseInt(grade), feedback: feedback })
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                alert('Graded successfully!');
+                location.reload();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        });
+    </script>
+    <% } %>
+</body>
+</html>

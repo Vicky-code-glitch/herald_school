@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title><%= assignment.title %></title>
+</head>
+<body>
+    <header>
+        <h1><%= assignment.title %></h1>
+        <nav>
+            <a href="/students/dashboard">Dashboard</a> |
+            <a href="/students/assignments">Assignments</a> |
+            <a href="/students/my-submissions">My Submissions</a> |
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div style="background: #f4f4f4; padding: 1rem; border-radius: 5px;">
+            <h2>Assignment Details</h2>
+            <p><strong>Description:</strong></p>
+            <p><%= assignment.description %></p>
+            <p><strong>Due Date:</strong> <%= new Date(assignment.dueDate).toLocaleString() %></p>
+            <p><strong>Total Marks:</strong> <%= assignment.totalMarks %></p>
+            
+            <% if (assignment.fileUrl) { %>
+                <p><strong>Attachment:</strong> <a href="<%= assignment.fileUrl %>" target="_blank">Download</a></p>
+            <% } %>
+        </div>
+        
+        <% if (existingSubmission) { %>
+            <div style="margin-top: 2rem; background: #d4edda; padding: 1rem; border-radius: 5px;">
+                <h3>✅ You have already submitted this assignment</h3>
+                <p>Submitted on: <%= new Date(existingSubmission.submittedAt).toLocaleString() %></p>
+                <p>File: <a href="<%= existingSubmission.fileUrl %>" target="_blank"><%= existingSubmission.originalFileName %></a></p>
+                <% if (existingSubmission.grade) { %>
+                    <p><strong>Grade:</strong> <%= existingSubmission.grade %>%</p>
+                    <% if (existingSubmission.feedback) { %>
+                        <p><strong>Feedback:</strong> <%= existingSubmission.feedback %></p>
+                    <% } %>
+                <% } else { %>
+                    <p>Status: <strong><%= existingSubmission.status %></strong> - Waiting for grading</p>
+                <% } %>
+                <a href="/students/my-submissions">View all my submissions</a>
+            </div>
+        <% } else { %>
+            <div style="margin-top: 2rem;">
+                <h3>Submit Your Work</h3>
+                <% if (isLate) { %>
+                    <div style="background: #fff3cd; padding: 0.5rem; margin-bottom: 1rem; border-left: 4px solid #ffc107;">
+                        ⚠️ Warning: This assignment is past the due date. Late submissions may be penalized.
+                    </div>
+                <% } %>
+                
+                <form id="submitForm" enctype="multipart/form-data">
+                    <label>Choose File (Max 10MB - PDF, DOC, TXT, JPG, PNG, ZIP):</label>
+                    <input type="file" id="assignmentFile" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.zip" required>
+                    <br><br>
+                    <button type="submit">Submit Assignment</button>
+                </form>
+                <div id="message" style="margin-top: 1rem;"></div>
+            </div>
+        <% } %>
+        
+        <br>
+        <a href="/students/assignments">← Back to Assignments</a>
+    </main>
+    
+    <% if (!existingSubmission) { %>
+    <script>
+        document.getElementById('submitForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('assignmentFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('assignmentFile', file);
+            
+            const submitBtn = document.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+            
+            try {
+                const response = await fetch('/students/assignments/<%= assignment._id %>/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('message').innerHTML = '<div style="background: #d4edda; padding: 1rem; border-radius: 5px;">✓ ' + result.message + ' Redirecting...</div>';
+                    setTimeout(() => {
+                        window.location.href = '/students/my-submissions';
+                    }, 2000);
+                } else {
+                    document.getElementById('message').innerHTML = '<div style="background: #f8d7da; padding: 1rem; border-radius: 5px;">❌ ' + result.message + '</div>';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Assignment';
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = '<div style="background: #f8d7da; padding: 1rem; border-radius: 5px;">❌ Submission failed. Please try again.</div>';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Assignment';
+            }
+        });
+    </script>
+    <% } %>
+</body>
+</html>

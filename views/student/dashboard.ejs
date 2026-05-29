@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title>Student Dashboard</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome <%= user.name %>!</h1>
+        <nav>
+            <a href="/students/dashboard">Dashboard</a> |
+            <a href="/students/assignments">Assignments</a> |
+            <a href="/students/my-submissions">My Submissions</a> |
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Your Submissions</h2>
+        <% if (submissions.length === 0) { %>
+            <p>No submissions yet.</p>
+        <% } else { %>
+            <ul>
+                <% submissions.forEach(sub => { %>
+                    <li><%= sub.assignmentId.title %> - <%= sub.grade ? 'Graded: ' + sub.grade + '%' : 'Pending' %></li>
+                <% }) %>
+            </ul>
+        <% } %>
+        
+        <h2>Pending Assignments</h2>
+        <% if (pendingAssignments.length === 0) { %>
+            <p>All caught up!</p>
+        <% } else { %>
+            <ul>
+                <% pendingAssignments.forEach(assignment => { %>
+                    <li><a href="/students/assignments/<%= assignment._id %>"><%= assignment.title %></a> - Due: <%= new Date(assignment.dueDate).toLocaleDateString() %></li>
+                <% }) %>
+            </ul>
+        <% } %>
+    </main>
+</body>
+</html>

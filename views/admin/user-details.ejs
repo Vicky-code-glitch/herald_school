@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title><%= targetUser.name %> - User Details</title>
+    <style>
+        .user-info {
+            background: #f4f4f4;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .role-student { 
+            background: #28a745; 
+            color: white; 
+        }
+        .role-teacher { 
+            background: #17a2b8; 
+            color: white; 
+        }
+        .role-admin { 
+            background: #dc3545; 
+            color: white; 
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>User Details</h1>
+        <nav>
+            <a href="/admin/dashboard">Dashboard</a> |
+            <a href="/admin/users">Users</a> |
+            <a href="/admin/submissions">Submissions</a> |
+            <a href="/admin/stats">Statistics</a> |
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="user-info">
+            <h2><%= targetUser.name %></h2>
+            <p><strong>Email:</strong> <%= targetUser.email %></p>
+            <p><strong>Role:</strong> 
+                <span class="role-badge role-<%= targetUser.role %>">
+                    <%= targetUser.role %>
+                </span>
+            </p>
+            <p><strong>Roll Number:</strong> <%= targetUser.rollNumber || 'Not set' %></p>
+            <p><strong>Joined:</strong> <%= new Date(targetUser.createdAt).toLocaleString() %></p>
+            <a href="/admin/users">← Back to Users</a>
+        </div>
+        
+        <% if (targetUser.role === 'student') { %>
+            <h2>Submissions by <%= targetUser.name %></h2>
+            <% if (submissions.length === 0) { %>
+                <p>No submissions yet.</p>
+            <% } else { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Assignment</th>
+                            <th>Submitted</th>
+                            <th>Grade</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% submissions.forEach(sub => { %>
+                            <tr>
+                                <td><%= sub.assignmentId.title %></td>
+                                <td><%= new Date(sub.submittedAt).toLocaleDateString() %></td>
+                                <td><%= sub.grade ? sub.grade + '%' : 'Not graded' %></td>
+                                <td><%= sub.status %></td>
+                                <td><a href="/admin/submissions/<%= sub._id %>">View</a></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+        <% } %>
+    </main>
+</body>
+</html>

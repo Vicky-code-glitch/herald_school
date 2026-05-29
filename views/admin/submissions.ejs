@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title>All Submissions - Admin</title>
+    <style>
+        .filters {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f4f4f4;
+            border-radius: 5px;
+        }
+        .grade-input {
+            width: 60px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>All Submissions</h1>
+        <nav>
+            <a href="/admin/dashboard">Dashboard</a> |
+            <a href="/admin/users">Users</a> |
+            <a href="/admin/submissions">Submissions</a> |
+            <a href="/admin/stats">Statistics</a> |
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="filters">
+            <form method="GET" action="/admin/submissions">
+                <label>Status:</label>
+                <select name="status">
+                    <option value="all" <%= filters.status === 'all' ? 'selected' : '' %>>All</option>
+                    <option value="submitted" <%= filters.status === 'submitted' ? 'selected' : '' %>>Submitted</option>
+                    <option value="graded" <%= filters.status === 'graded' ? 'selected' : '' %>>Graded</option>
+                    <option value="late" <%= filters.status === 'late' ? 'selected' : '' %>>Late</option>
+                </select>
+                
+                <label>Assignment:</label>
+                <select name="assignmentId">
+                    <option value="all" <%= filters.assignmentId === 'all' ? 'selected' : '' %>>All Assignments</option>
+                    <% allAssignments.forEach(assignment => { %>
+                        <option value="<%= assignment._id %>" <%= filters.assignmentId === assignment._id ? 'selected' : '' %>>
+                            <%= assignment.title %>
+                        </option>
+                    <% }) %>
+                </select>
+                
+                <button type="submit">Filter</button>
+                <a href="/admin/submissions">Clear</a>
+            </form>
+        </div>
+        
+        <h2>Submissions (<%= submissions.length %>)</h2>
+        
+        <% if (submissions.length === 0) { %>
+            <p>No submissions found.</p>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Assignment</th>
+                        <th>Submitted</th>
+                        <th>Grade</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% submissions.forEach(sub => { %>
+                        <tr>
+                            <td><%= sub.studentId.name %></td>
+                            <td><%= sub.assignmentId.title %></td>
+                            <td><%= new Date(sub.submittedAt).toLocaleString() %></td>
+                            <td>
+                                <% if (sub.grade) { %>
+                                    <%= sub.grade %>%
+                                <% } else { %>
+                                    <form class="grade-form" data-id="<%= sub._id %>">
+                                        <input type="number" class="grade-input" placeholder="0-100" min="0" max="100" required>
+                                        <button type="submit">Grade</button>
+                                    </form>
+                                <% } %>
+                            </td>
+                            <td><%= sub.status %></td>
+                            <td>
+                                <a href="/admin/submissions/<%= sub._id %>">View Details</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+    </main>
+    
+    <script>
+        document.querySelectorAll('.grade-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submissionId = form.dataset.id;
+                const gradeInput = form.querySelector('.grade-input');
+                const grade = gradeInput.value;
+                
+                if (grade < 0 || grade > 100) {
+                    alert('Grade must be between 0 and 100');
+                    return;
+                }
+                
+                const response = await fetch(`/admin/submissions/${submissionId}/grade`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ grade: parseInt(grade), feedback: '' })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('Graded successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

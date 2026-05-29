@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title>System Statistics</title>
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .stat-section {
+            background: #f4f4f4;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .stat-label {
+            font-weight: bold;
+        }
+        .stat-value {
+            color: #007bff;
+            font-weight: bold;
+        }
+        h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>System Statistics</h1>
+        <nav>
+            <a href="/admin/dashboard">Dashboard</a> |
+            <a href="/admin/users">Users</a> |
+            <a href="/admin/submissions">Submissions</a> |
+            <a href="/admin/stats">Statistics</a> |
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="stats-grid">
+            <!-- User Statistics -->
+            <div class="stat-section">
+                <h3>👥 User Statistics</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Total Users:</span>
+                    <span class="stat-value"><%= stats.users.total %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Students:</span>
+                    <span class="stat-value"><%= stats.users.students %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Teachers:</span>
+                    <span class="stat-value"><%= stats.users.teachers %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Admins:</span>
+                    <span class="stat-value"><%= stats.users.admins %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">New This Month:</span>
+                    <span class="stat-value"><%= stats.users.newThisMonth %></span>
+                </div>
+            </div>
+            
+            <!-- Assignment Statistics -->
+            <div class="stat-section">
+                <h3>📚 Assignment Statistics</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Total Assignments:</span>
+                    <span class="stat-value"><%= stats.assignments.total %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Active Assignments:</span>
+                    <span class="stat-value"><%= stats.assignments.active %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Due This Week:</span>
+                    <span class="stat-value"><%= stats.assignments.dueThisWeek %></span>
+                </div>
+            </div>
+            
+            <!-- Submission Statistics -->
+            <div class="stat-section">
+                <h3>📝 Submission Statistics</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Total Submissions:</span>
+                    <span class="stat-value"><%= stats.submissions.total %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Graded:</span>
+                    <span class="stat-value"><%= stats.submissions.graded %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pending Grading:</span>
+                    <span class="stat-value"><%= stats.submissions.pendingGrading %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Late Submissions:</span>
+                    <span class="stat-value"><%= stats.submissions.lateSubmissions %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">This Month:</span>
+                    <span class="stat-value"><%= stats.submissions.thisMonth %></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Students -->
+        <div class="stat-section">
+            <h3>🏆 Top Performing Students</h3>
+            <% if (topStudents.length === 0) { %>
+                <p>No graded submissions yet.</p>
+            <% } else { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Student Name</th>
+                            <th>Average Grade</th>
+                            <th>Submissions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% topStudents.forEach((student, index) => { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= student.user ? student.user.name : 'Unknown' %></td>
+                                <td><%= student.averageGrade.toFixed(1) %>%</td>
+                                <td><%= student.submissionsCount %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div>
+    </main>
+</body>
+</html>

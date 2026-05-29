@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title>All Assignments</title>
+    <style>
+        .assignment-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: white;
+        }
+        .submitted-badge {
+            background: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>All Assignments</h1>
+        <nav>
+            <a href="/students/dashboard">Dashboard</a> |
+            <a href="/students/assignments">Assignments</a> |
+            <a href="/students/my-submissions">My Submissions</a> |
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Available Assignments</h2>
+        
+        <% if (assignments.length === 0) { %>
+            <p>No assignments available yet.</p>
+        <% } else { %>
+            <% assignments.forEach(assignment => { %>
+                <div class="assignment-card">
+                    <h3><%= assignment.title %></h3>
+                    <p><%= assignment.description %></p>
+                    <p><strong>Due Date:</strong> <%= new Date(assignment.dueDate).toLocaleString() %></p>
+                    <p><strong>Total Marks:</strong> <%= assignment.totalMarks %></p>
+                    <p><strong>Posted by:</strong> <%= assignment.createdBy.name %></p>
+                    
+                    <% if (submittedIds.includes(assignment._id.toString())) { %>
+                        <span class="submitted-badge">✓ Submitted</span>
+                        <a href="/students/my-submissions">View Submission</a>
+                    <% } else { %>
+                        <a href="/students/assignments/<%= assignment._id %>">Submit Assignment</a>
+                    <% } %>
+                </div>
+            <% }) %>
+        <% } %>
+    </main>
+</body>
+</html>

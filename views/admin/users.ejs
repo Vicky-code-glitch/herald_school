@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title>Manage Users - Admin</title>
+    <style>
+        .filters {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f4f4f4;
+            border-radius: 5px;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .role-student { background: #28a745; color: white; }
+        .role-teacher { background: #17a2b8; color: white; }
+        .role-admin { background: #dc3545; color: white; }
+        .actions button {
+            margin: 0 2px;
+            padding: 3px 8px;
+            font-size: 0.8rem;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>User Management</h1>
+        <nav>
+            <a href="/admin/dashboard">Dashboard</a> |
+            <a href="/admin/users">Users</a> |
+            <a href="/admin/submissions">Submissions</a> |
+            <a href="/admin/stats">Statistics</a> |
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="filters">
+            <form method="GET" action="/admin/users">
+                <label>Role:</label>
+                <select name="role">
+                    <option value="all" <%= filters.role === 'all' ? 'selected' : '' %>>All</option>
+                    <option value="student" <%= filters.role === 'student' ? 'selected' : '' %>>Students</option>
+                    <option value="teacher" <%= filters.role === 'teacher' ? 'selected' : '' %>>Teachers</option>
+                    <option value="admin" <%= filters.role === 'admin' ? 'selected' : '' %>>Admins</option>
+                </select>
+                
+                <label>Search:</label>
+                <input type="text" name="search" placeholder="Name or email" value="<%= filters.search %>">
+                
+                <button type="submit">Filter</button>
+                <a href="/admin/users">Clear</a>
+            </form>
+        </div>
+        
+        <h2>All Users (<%= users.length %>)</h2>
+        
+        <% if (users.length === 0) { %>
+            <p>No users found.</p>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td><%= user.name %></td>
+                            <td><%= user.email %></td>
+                            <td>
+                                <span class="role-badge role-<%= user.role %>">
+                                    <%= user.role %>
+                                </span>
+                            </td>
+                            <td><%= new Date(user.createdAt).toLocaleDateString() %></td>
+                            <td class="actions">
+                                <a href="/admin/users/<%= user._id %>">View</a>
+                                <button onclick="showRoleModal('<%= user._id %>', '<%= user.name %>', '<%= user.role %>')">Change Role</button>
+                                <button onclick="deleteUser('<%= user._id %>', '<%= user.name %>')" style="background: #dc3545; color: white;">Delete</button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+    </main>
+    
+    <!-- Change Role Modal -->
+    <div id="roleModal" class="modal">
+        <h3>Change User Role</h3>
+        <p id="modalUserName"></p>
+        <form id="roleForm">
+            <input type="hidden" id="userId">
+            <label>New Role:</label>
+            <select id="newRole" required>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="admin">Admin</option>
+            </select>
+            <br><br>
+            <button type="submit">Update</button>
+            <button type="button" onclick="closeModal()">Cancel</button>
+        </form>
+    </div>
+    <div id="overlay" class="overlay" onclick="closeModal()"></div>
+    
+    <script>
+        function showRoleModal(userId, userName, currentRole) {
+            document.getElementById('userId').value = userId;
+            document.getElementById('modalUserName').innerText = `User: ${userName}`;
+            document.getElementById('newRole').value = currentRole;
+            document.getElementById('roleModal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('roleModal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+        
+        document.getElementById('roleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById('userId').value;
+            const newRole = document.getElementById('newRole').value;
+            
+            const response = await fetch(`/admin/users/${userId}/role`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ role: newRole })
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        });
+        
+        async function deleteUser(userId, userName) {
+            if (confirm(`Are you sure you want to delete ${userName}? This action cannot be undone.`)) {
+                const response = await fetch(`/admin/users/${userId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

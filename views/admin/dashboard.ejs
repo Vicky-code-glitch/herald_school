@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title>Admin Dashboard</title>
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .stat-card {
+            padding: 1rem;
+            background: #f4f4f4;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Panel - Welcome <%= user.name %></h1>
+        <nav>
+            <a href="/admin/dashboard">Dashboard</a> |
+            <a href="/admin/users">Users</a> |
+            <a href="/admin/submissions">Submissions</a> |
+            <a href="/admin/stats">Statistics</a> |
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.totalStudents %></div>
+                <div>Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.totalTeachers %></div>
+                <div>Teachers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.totalAssignments %></div>
+                <div>Assignments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.totalSubmissions %></div>
+                <div>Submissions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.pendingGrading %></div>
+                <div>Pending Grading</div>
+            </div>
+        </div>
+        
+        <h2>Recent Submissions</h2>
+        <% if (recentSubmissions.length === 0) { %>
+            <p>No recent submissions.</p>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr><th>Student</th><th>Assignment</th><th>Submitted</th><th>Status</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    <% recentSubmissions.forEach(sub => { %>
+                        <tr>
+                            <td><%= sub.studentId.name %></td>
+                            <td><%= sub.assignmentId.title %></td>
+                            <td><%= sub.submittedAt.toLocaleDateString() %></td>
+                            <td><%= sub.grade ? 'Graded: ' + sub.grade + '%' : 'Pending' %></td>
+                            <td><a href="/admin/submissions/<%= sub._id %>">View</a></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+    </main>
+</body>
+</html>
